@@ -6,7 +6,7 @@ function History() {
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/history")
+    axios.get("https://bulkmail-app-dw3a.onrender.com/history")
       .then(res => {
         setMails(res.data.data);
       });

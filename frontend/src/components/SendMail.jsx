@@ -42,7 +42,7 @@ function SendMail() {
         }
 
         setstatus(true)
-        axios.post("http://localhost:5000/sendmail", { subject: subject, msg: msg, emailList: emailList })
+        axios.post("https://bulkmail-app-dw3a.onrender.com/sendmail", { subject: subject, msg: msg, emailList: emailList })
             .then(function (res) {
 
                 if (res.data.success === true) {
