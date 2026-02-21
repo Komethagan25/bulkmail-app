@@ -67,7 +67,7 @@ app.post("/sendmail", function (req, res) {
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 465,
+            port: 587,
             secure: true, // use TLS
             family: 4,    // <--- THIS IS THE FIX: Forces IPv4
             auth: {
