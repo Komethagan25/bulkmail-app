@@ -4,8 +4,8 @@ const app = express()
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 
-const dns = require("dns");
-dns.setServers(["8.8.8.8", "1.1.1.1"]);
+// const dns = require("dns");
+// dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 
 app.use(cors())
