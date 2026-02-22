@@ -1,7 +1,12 @@
+require("dotenv").config();
+const sgMail = require("@sendgrid/mail");
+
+sgMail.setApiKey(process.env.SG_KEY);
+
 const express = require("express")
 const cors = require("cors")
 const app = express()
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 
 // const dns = require("dns");
@@ -18,12 +23,12 @@ mongoose.connect("mongodb+srv://komethagan_25:komethagan123@bulkmail.tvqkxsf.mon
     console.log(err)
 })
 
-const credentialSchema = new mongoose.Schema({
-    user: String,
-    pass: String
-})
+// const credentialSchema = new mongoose.Schema({
+//     user: String,
+//     pass: String
+// })
 
-const Credential = mongoose.model("Credential", credentialSchema, "bulkmail")
+// const Credential = mongoose.model("Credential", credentialSchema, "bulkmail")
 
 
 const userSchema = new mongoose.Schema({
@@ -49,94 +54,143 @@ const mailSchema = new mongoose.Schema({
 const Mail = mongoose.model("Mail", mailSchema)
 
 
-app.post("/sendmail", function (req, res) {
+// app.post("/sendmail", function (req, res) {
 
-    var subject = req.body.subject
-    var msg = req.body.msg
-    var emailList = req.body.emailList
+//     var subject = req.body.subject
+//     var msg = req.body.msg
+//     var emailList = req.body.emailList
 
 
-    Credential.findOne().then(function (data) {
+//     Credential.findOne().then(function (data) {
 
-        if (!data) {
-            return res.status(500).json({
-                success: false,
-                message: "No credentials found"
-            })
+//         if (!data) {
+//             return res.status(500).json({
+//                 success: false,
+//                 message: "No credentials found"
+//             })
+//         }
+
+//         const transporter = nodemailer.createTransport({
+//             host: "smtp.gmail.com",
+//             port: 587,
+//             secure: false, 
+//             family: 4,    
+//             auth: {
+//                 user: data.user,
+//                 pass: data.pass,
+//             },
+//         });
+
+
+
+
+
+
+//         new Promise(async function (resolve, reject) {
+
+//             try {
+//                 for (var i = 0; i < emailList.length; i++) {
+
+//                     await transporter.sendMail(
+//                         {
+//                             from: "komethagan12@gmail.com",
+//                             to: emailList[i],
+//                             subject: subject,
+//                             text: msg
+//                         }
+//                     )
+
+//                     console.log("Email sent to " + emailList[i])
+
+//                 }
+//                 resolve("success")
+//             }
+//             catch (err) {
+//                 console.log(err)
+//                 reject("failed")
+//             }
+//         }).then(async function () {
+
+//             await Mail.create({
+//                 subject: subject,
+//                 body: msg,
+//                 recipients: emailList,
+//                 status: "Success"
+//             })
+
+//             res.status(200).json({ success: true, message: "Emails sent successfully" })
+
+//         }).catch(async function () {
+
+//             await Mail.create({
+//                 subject: subject,
+//                 body: msg,
+//                 recipients: emailList,
+//                 status: "Failed"
+//             })
+//             res.status(500).json({ success: false, message: "Email sending failed" })
+
+//         })
+
+
+
+//     }).catch(function (err) {
+//         console.log(err)
+//     })
+
+
+// })
+
+
+app.post("/sendmail", async function (req, res) {
+
+    const { subject, msg, emailList } = req.body;
+
+    try {
+
+        for (let i = 0; i < emailList.length; i++) {
+
+            const message = {
+                to: emailList[i],
+                from: "komethagan12@gmail.com", // must be verified sender in SendGrid
+                subject: subject,
+                text: msg,
+            };
+
+            await sgMail.send(message);
+
+            console.log("Email sent to " + emailList[i]);
         }
 
-        const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
-            secure: true, 
-            family: 4,    
-            auth: {
-                user: data.user,
-                pass: data.pass,
-            },
+        await Mail.create({
+            subject: subject,
+            body: msg,
+            recipients: emailList,
+            status: "Success"
         });
 
+        res.status(200).json({
+            success: true,
+            message: "Emails sent successfully"
+        });
 
+    } catch (error) {
 
+        console.log(error);
 
+        await Mail.create({
+            subject: subject,
+            body: msg,
+            recipients: emailList,
+            status: "Failed"
+        });
 
-
-        new Promise(async function (resolve, reject) {
-
-            try {
-                for (var i = 0; i < emailList.length; i++) {
-
-                    await transporter.sendMail(
-                        {
-                            from: "komethagan12@gmail.com",
-                            to: emailList[i],
-                            subject: subject,
-                            text: msg
-                        }
-                    )
-
-                    console.log("Email sent to " + emailList[i])
-
-                }
-                resolve("success")
-            }
-            catch (err) {
-                console.log(err)
-                reject("failed")
-            }
-        }).then(async function () {
-
-            await Mail.create({
-                subject: subject,
-                body: msg,
-                recipients: emailList,
-                status: "Success"
-            })
-
-            res.status(200).json({ success: true, message: "Emails sent successfully" })
-
-        }).catch(async function () {
-
-            await Mail.create({
-                subject: subject,
-                body: msg,
-                recipients: emailList,
-                status: "Failed"
-            })
-            res.status(500).json({ success: false, message: "Email sending failed" })
-
-        })
-
-
-
-    }).catch(function (err) {
-        console.log(err)
-    })
-
-
-})
-
-
+        res.status(500).json({
+            success: false,
+            message: "Email sending failed"
+        });
+    }
+});
 
 
 
