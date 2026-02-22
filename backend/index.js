@@ -1,6 +1,3 @@
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
-
 
 
 const express = require("express")
@@ -11,6 +8,10 @@ const mongoose = require("mongoose")
 
 // const dns = require("dns");
 // dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
 
 
 app.use(cors())
@@ -155,16 +156,16 @@ app.post("/sendmail", async function (req, res) {
 
         // 2. Configure Transporter
         const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
+            host: "172.253.115.108", // This is one of Gmail's IPv4 addresses
             port: 587,
-            secure: false, // Use false for 587
-            family: 4,     // Extra layer: forces the connection to use IPv4
+            secure: false,
             auth: {
                 user: data.user,
                 pass: data.pass,
             },
             tls: {
-                rejectUnauthorized: false // Prevents the connection from being dropped
+                servername: 'smtp.gmail.com', // Necessary for SSL handshake to work with an IP
+                rejectUnauthorized: false
             }
         });
 
