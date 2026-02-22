@@ -143,29 +143,32 @@ const Mail = mongoose.model("Mail", mailSchema)
 
 
 app.post("/sendmail", async function (req, res) {
-
     const { subject, msg, emailList } = req.body;
 
     try {
+        console.log("Emails received:", emailList);
 
-        for (let i = 0; i < emailList.length; i++) {
+        // Remove empty or invalid emails
+        const validEmails = emailList.filter(email => email && email.includes("@"));
 
-            const message = {
-                to: emailList[i],
-                from: "komethagan12@gmail.com", // must be verified sender in SendGrid
-                subject: subject,
-                text: msg,
-            };
-
-            await sgMail.send(message);
-
-            console.log("Email sent to " + emailList[i]);
+        if (validEmails.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No valid emails found"
+            });
         }
+
+        await sgMail.sendMultiple({
+            to: validEmails,
+            from: "komethagan12@gmail.com",  // MUST be verified in SendGrid
+            subject: subject,
+            text: msg,
+        });
 
         await Mail.create({
             subject: subject,
             body: msg,
-            recipients: emailList,
+            recipients: validEmails,
             status: "Success"
         });
 
@@ -176,7 +179,7 @@ app.post("/sendmail", async function (req, res) {
 
     } catch (error) {
 
-        console.log(error);
+        console.log("SENDGRID ERROR:", error.response?.body || error);
 
         await Mail.create({
             subject: subject,
