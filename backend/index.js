@@ -156,17 +156,15 @@ app.post("/sendmail", async function (req, res) {
 
         // 2. Configure Transporter
         const transporter = nodemailer.createTransport({
-            host: "172.253.115.108", // This is one of Gmail's IPv4 addresses
-            port: 587,
-            secure: false,
+            service: 'gmail',
             auth: {
                 user: data.user,
-                pass: data.pass,
+                pass: data.pass, // MUST be a 16-character App Password
             },
-            tls: {
-                servername: 'smtp.gmail.com', // Necessary for SSL handshake to work with an IP
-                rejectUnauthorized: false
-            }
+            // Adding a timeout buffer
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
         });
 
         // 3. Send Emails (Sequential loop is safer for Gmail)
