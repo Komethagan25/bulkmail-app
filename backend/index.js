@@ -162,7 +162,7 @@ app.post("/sendmail", async function (req, res) {
                 pass: data.pass, // MUST be a 16-character App Password
             },
             // Adding a timeout buffer
-            connectionTimeout: 30000, // 10 seconds
+            connectionTimeout: 20000, // 10 seconds
             
         });
 
