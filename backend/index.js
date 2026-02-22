@@ -155,11 +155,17 @@ app.post("/sendmail", async function (req, res) {
 
         // 2. Configure Transporter
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // Use false for 587
+            family: 4,     // Extra layer: forces the connection to use IPv4
             auth: {
                 user: data.user,
-                pass: data.pass, // Must be 16-character App Password
+                pass: data.pass,
             },
+            tls: {
+                rejectUnauthorized: false // Prevents the connection from being dropped
+            }
         });
 
         // 3. Send Emails (Sequential loop is safer for Gmail)
@@ -194,10 +200,10 @@ app.post("/sendmail", async function (req, res) {
             status: "Failed",
         });
 
-        res.status(500).json({ 
-            success: false, 
-            message: "Email sending failed", 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: "Email sending failed",
+            error: err.message
         });
     }
 });
