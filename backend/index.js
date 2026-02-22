@@ -1,3 +1,8 @@
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
+
+
 const express = require("express")
 const cors = require("cors")
 const app = express()
@@ -68,12 +73,14 @@ app.post("/sendmail", function (req, res) {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 587,
-            secure: true, // use TLS
-            family: 4,    // <--- THIS IS THE FIX: Forces IPv4
+            secure: false, // Must be false for port 587
             auth: {
                 user: data.user,
                 pass: data.pass,
             },
+            tls: {
+                rejectUnauthorized: false // Helps bypass some network restriction issues
+            }
         });
 
 
