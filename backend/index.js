@@ -1,5 +1,3 @@
-
-
 const express = require("express")
 const cors = require("cors")
 const app = express()
@@ -8,10 +6,6 @@ const mongoose = require("mongoose")
 
 // const dns = require("dns");
 // dns.setServers(["8.8.8.8", "1.1.1.1"]);
-
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
-
 
 
 app.use(cors())
@@ -73,15 +67,13 @@ app.post("/sendmail", function (req, res) {
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 465,        // Use 465 for secure: true
-            secure: true,
+            port: 587,
+            secure: true, 
+            family: 4,    
             auth: {
                 user: data.user,
                 pass: data.pass,
             },
-            tls: {
-                rejectUnauthorized: false // Helps bypass some network restriction issues
-            }
         });
 
 
@@ -143,6 +135,9 @@ app.post("/sendmail", function (req, res) {
 
 
 })
+
+
+
 
 
 
