@@ -162,9 +162,8 @@ app.post("/sendmail", async function (req, res) {
                 pass: data.pass, // MUST be a 16-character App Password
             },
             // Adding a timeout buffer
-            connectionTimeout: 10000, // 10 seconds
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
+            connectionTimeout: 30000, // 10 seconds
+            
         });
 
         // 3. Send Emails (Sequential loop is safer for Gmail)
