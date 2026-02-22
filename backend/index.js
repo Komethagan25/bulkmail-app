@@ -89,7 +89,7 @@ app.post("/sendmail", function (req, res) {
 
 
 
-        new Promise.all(async function (resolve, reject) {
+        new Promise(async function (resolve, reject) {
 
             try {
                 for (var i = 0; i < emailList.length; i++) {
