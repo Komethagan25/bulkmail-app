@@ -72,8 +72,8 @@ app.post("/sendmail", function (req, res) {
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 587,
-            secure: false, // Must be false for port 587
+            port: 465,        // Use 465 for secure: true
+            secure: true,
             auth: {
                 user: data.user,
                 pass: data.pass,
@@ -88,7 +88,7 @@ app.post("/sendmail", function (req, res) {
 
 
 
-        new Promise(async function (resolve, reject) {
+        new Promise.all(async function (resolve, reject) {
 
             try {
                 for (var i = 0; i < emailList.length; i++) {
