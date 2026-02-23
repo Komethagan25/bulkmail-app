@@ -1,47 +1,53 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Login({ setIsLoggedIn }) {
-    const [email, setEmail] = useState("");
+function AdminLogin({ setIsAdminLoggedIn }) {
+
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [msg, setMsg] = useState("");
+
     const navigate = useNavigate();
 
-    const handleLogin = async (evt) => {
-        evt.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-        if (!email || !password) {
+        // Frontend validation
+        if (!username || !password) {
             setMsg("Please fill all fields");
             return;
         }
 
         try {
-            const res = await axios.post("https://bulkmail-app-dw3a.onrender.com/login", {
-                email,
-                password,
+
+            const res = await axios.post("https://bulkmail-app-dw3a.onrender.com/admin/login", {
+                username,
+                password
             });
-            console.log(res.data);
 
             if (res.data.success) {
-                localStorage.setItem("user", JSON.stringify(res.data.user));
-                setIsLoggedIn(true);
+
+                localStorage.setItem("admin", "true");
+                setIsAdminLoggedIn(true);
                 navigate("/dashboard");
+
             } else {
-                setMsg(res.data.message);
+                setMsg(res.data.message || "Invalid credentials");
             }
 
-        } catch (err) {
-            setMsg("Login failed");
+        } catch (error) {
+            setMsg("Invalid Admin Credentials");
         }
     };
 
     return (
         <div className="h-screen bg-blue-950 flex items-center justify-center">
+
             <div className="bg-blue-900 bg-opacity-90 p-10 rounded-xl w-96 shadow-2xl">
 
                 <h1 className="text-white text-3xl font-bold mb-6 text-center">
-                    BulkMail Login
+                    BulkMail Admin
                 </h1>
 
                 {msg && (
@@ -53,11 +59,14 @@ function Login({ setIsLoggedIn }) {
                 <form onSubmit={handleLogin} className="flex flex-col gap-4">
 
                     <input
-                        type="email"
-                        placeholder="Email"
+                        type="text"
+                        placeholder="Username"
                         className="p-3 rounded bg-blue-800 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            setMsg("");
+                        }}
                     />
 
                     <input
@@ -65,7 +74,10 @@ function Login({ setIsLoggedIn }) {
                         placeholder="Password"
                         className="p-3 rounded bg-blue-800 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            setMsg("");
+                        }}
                     />
 
                     <button className="bg-blue-600 hover:bg-blue-700 transition p-3 rounded text-white font-semibold">
@@ -74,16 +86,9 @@ function Login({ setIsLoggedIn }) {
 
                 </form>
 
-                <p className="text-gray-300 mt-4 text-sm text-center">
-                    Don’t have an account?{" "}
-                    <Link to="/signup" className="underline text-white">
-                        Sign up
-                    </Link>
-                </p>
-
             </div>
         </div>
     );
 }
 
-export default Login;
+export default AdminLogin;

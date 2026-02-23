@@ -1,39 +1,72 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import Navbar from "./components/Navbar";
 import SendMail from "./components/SendMail";
 import History from "./components/History";
-import Signup from "./pages/SignUp";
-import Login from "./pages/Login";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
+  // Check login status on refresh
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setIsLoggedIn(true);
+    const admin = localStorage.getItem("admin");
+    if (admin) {
+      setIsAdminLoggedIn(true);
     }
   }, []);
 
   return (
     <div>
 
-      {isLoggedIn && <Navbar setIsLoggedIn={setIsLoggedIn} />}
-
+      {/* Show Navbar only if Admin logged in */}
+      {isAdminLoggedIn && (
+        <Navbar setIsAdminLoggedIn={setIsAdminLoggedIn} />
+      )}
 
       <Routes>
 
-        <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        {/* Default Route */}
+        <Route
+          path="/"
+          element={
+            isAdminLoggedIn
+              ? <Navigate to="/dashboard" />
+              : <Navigate to="/admin/login" />
+          }
+        />
 
-        <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Signup />} />
+        {/* Admin Login */}
+        <Route
+          path="/admin/login"
+          element={
+            isAdminLoggedIn
+              ? <Navigate to="/dashboard" />
+              : <AdminLogin setIsAdminLoggedIn={setIsAdminLoggedIn} />
+          }
+        />
 
-        <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+        {/* Admin Dashboard */}
+        <Route
+          path="/dashboard"
+          element={
+            isAdminLoggedIn
+              ? <SendMail />
+              : <Navigate to="/admin/login" />
+          }
+        />
 
-        <Route path="/dashboard" element={isLoggedIn ? <SendMail /> : <Navigate to="/login" />} />
-
-        <Route path="/history" element={isLoggedIn ? <History /> : <Navigate to="/login" />} />
+        {/* Admin History */}
+        <Route
+          path="/history"
+          element={
+            isAdminLoggedIn
+              ? <History />
+              : <Navigate to="/admin/login" />
+          }
+        />
 
       </Routes>
     </div>

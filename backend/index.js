@@ -9,8 +9,8 @@ const app = express()
 // const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 
-// const dns = require("dns");
-// dns.setServers(["8.8.8.8", "1.1.1.1"]);
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 
 app.use(cors())
@@ -23,20 +23,13 @@ mongoose.connect("mongodb+srv://komethagan_25:komethagan123@bulkmail.tvqkxsf.mon
     console.log(err)
 })
 
-// const credentialSchema = new mongoose.Schema({
-//     user: String,
-//     pass: String
-// })
-
-// const Credential = mongoose.model("Credential", credentialSchema, "bulkmail")
-
-
-const userSchema = new mongoose.Schema({
-    email: { type: String, unique: true },
+// ADMIN SCHEMA
+const adminSchema = new mongoose.Schema({
+    username: String,
     password: String
-})
+});
 
-const User = mongoose.model("User", userSchema)
+const Admin = mongoose.model("Admin", adminSchema);
 
 
 
@@ -52,6 +45,7 @@ const mailSchema = new mongoose.Schema({
 })
 
 const Mail = mongoose.model("Mail", mailSchema)
+
 
 
 // app.post("/sendmail", function (req, res) {
@@ -160,7 +154,7 @@ app.post("/sendmail", async function (req, res) {
 
         await sgMail.sendMultiple({
             to: validEmails,
-            from: "komethagan12@gmail.com",  // MUST be verified in SendGrid
+            from: "komethagan12@gmail.com", 
             subject: subject,
             text: msg,
         });
@@ -196,8 +190,6 @@ app.post("/sendmail", async function (req, res) {
 });
 
 
-
-
 // EMAIL HISTORY API
 app.get("/history", async function (req, res) {
 
@@ -221,65 +213,39 @@ app.get("/history", async function (req, res) {
 
 })
 
-// signup
 
-app.post("/signup", async function (req, res) {
+//Login api 
+app.post("/admin/login", async function (req, res) {
 
-    const { email, password } = req.body
-
-    try {
-
-        const existingUser = await User.findOne({ email })
-
-        if (existingUser) {
-            return res.json({ success: false, message: "User already exists" })
-        }
-
-        await User.create({
-            email,
-            password
-        })
-
-        res.json({ success: true, message: "Signup successful" })
-
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Error signing up" })
-    }
-
-})
-
-// LoginApi
-
-app.post("/login", async function (req, res) {
-
-    const { email, password } = req.body
+    const { username, password } = req.body;
 
     try {
 
-        const user = await User.findOne({ email })
+        const admin = await Admin.findOne({ username, password });
 
-        if (!user) {
-            return res.json({ success: false, message: "User not found" })
+        if (!admin) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Admin Credentials"
+            });
         }
 
-        if (user.password !== password) {
-            return res.json({ success: false, message: "Invalid password" })
-        }
-
-        res.json({
+        res.status(200).json({
             success: true,
-            message: "Login successful",
-            user: {
-                id: user._id,
-                email: user.email
-            }
-        })
+            message: "Admin Login Successful"
+        });
 
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Login error" })
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 
-})
+});
 
 
 
