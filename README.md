@@ -3,6 +3,9 @@
 A full-stack Bulk Email Sending Application built using the MERN stack.
 Users can send emails to multiple recipients with subject, message.
 
+## Live Link 
+         https://bulkmail-app-three.vercel.app
+
 ##  Tech Stack
 
 ### Frontend
@@ -16,7 +19,7 @@ Users can send emails to multiple recipients with subject, message.
 - Express.js
 - MongoDB Atlas
 - Mongoose
-- Nodemailer
+- Brevo (Transactional Email API)
 - Render (Deployment)
 
 ##  Features
