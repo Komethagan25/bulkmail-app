@@ -166,11 +166,11 @@
 // })
 
 
-require("dotenv").config();
-const brevo = require("@getbrevo/brevo");
 
-const brevoClient = new brevo.TransactionalEmailsApi();
-brevoClient.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_KEY);
+require("dotenv").config();
+const { BrevoClient } = require("@getbrevo/brevo");
+
+const brevoClient = new BrevoClient({ apiKey: process.env.BREVO_KEY });
 
 const express = require("express")
 const cors = require("cors")
@@ -232,13 +232,12 @@ app.post("/sendmail", async function (req, res) {
         // Brevo allows batching, but per-recipient calls keep addresses private from
         // each other and keep this close to your original logic.
         const sendPromises = validEmails.map(function (email) {
-            const sendSmtpEmail = new brevo.SendSmtpEmail();
-            sendSmtpEmail.to = [{ email: email }];
-            sendSmtpEmail.sender = { email: "komethagan12@gmail.com", name: "Bulkmail App" };
-            sendSmtpEmail.subject = subject;
-            sendSmtpEmail.textContent = msg;
-
-            return brevoClient.sendTransacEmail(sendSmtpEmail);
+            return brevoClient.transactionalEmails.sendTransacEmail({
+                to: [{ email: email }],
+                sender: { email: "komethagan12@gmail.com", name: "Bulkmail App" },
+                subject: subject,
+                textContent: msg,
+            });
         });
 
         await Promise.all(sendPromises);
@@ -257,7 +256,7 @@ app.post("/sendmail", async function (req, res) {
 
     } catch (error) {
 
-        console.log("BREVO ERROR:", error.response?.body || error.message || error);
+        console.log("BREVO ERROR:", error.rawResponse?.body || error.message || error);
 
         await Mail.create({
             subject: subject,
