@@ -34,13 +34,16 @@ Users can send emails to multiple recipients with subject, message.
 # Screenshots
 ## 🔑 Login Page
 
-     <img width="1306" height="595" alt="Screenshot 2026-08-01 185511" src="https://github.com/user-attachments/assets/ee639375-4d2d-48fd-a585-c2f3418c91b6" />
+<img width="1306" height="595" alt="Screenshot 2026-08-01 185511" src="https://github.com/user-attachments/assets/8739614e-d792-480e-ae9b-037a75b42df5" />
+
 
 ## 📧 Bulk Mail Dashboard
 
-<img width="1366" height="768" alt="Screenshot 2026-08-01 185329" src="https://github.com/user-attachments/assets/b6d721aa-4782-42f3-bead-64edc07a25aa" />
+<img width="1366" height="768" alt="Screenshot 2026-08-01 185329" src="https://github.com/user-attachments/assets/2299342b-7617-4ab1-96f8-a1bfb44b8c0e" />
 
 ## 📜 Email History
 
-<img width="1306" height="595" alt="Screenshot 2026-08-01 185511" src="https://github.com/user-attachments/assets/a56b3209-e419-46e3-a358-b69403d4b1a7" />
+<img width="1328" height="629" alt="Screenshot 2026-08-01 185447" src="https://github.com/user-attachments/assets/5f8ba7b7-45bf-4969-829f-f8c073999a38" />
+
+
 
