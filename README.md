@@ -39,7 +39,7 @@ Users can send emails to multiple recipients with subject, message.
 
 ## 📧 Bulk Mail Dashboard
 
-<img width="1366" height="768" alt="Screenshot 2026-08-01 185329" src="https://github.com/user-attachments/assets/2299342b-7617-4ab1-96f8-a1bfb44b8c0e" />
+<img width="1297" height="612" alt="Screenshot 2026-08-01 190424" src="https://github.com/user-attachments/assets/826727bd-6e8a-4d19-a326-5c51128b5bb4" />
 
 ## 📜 Email History
 
